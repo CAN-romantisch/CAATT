@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CAT — Sadece bir kedi.</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+    background: #000;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+button {
+    font-family: inherit;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 52px;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0,0,0,.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.nav-inner {
+    width: min(1100px, calc(100% - 40px));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.7px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: rgba(255,255,255,.72);
+    text-decoration: none;
+    font-size: 12px;
+    transition: .3s ease;
+}
+
+.nav-links a:hover {
+    color: #fff;
+}
+
+.saved-count {
+    font-size: 12px;
+    color: rgba(255,255,255,.6);
+}
+
+/* HERO */
+
+.hero {
+    height: 100vh;
+    min-height: 700px;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(circle at 50% 45%, rgba(255,255,255,.09), transparent 35%),
+        #000;
+}
+
+.hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    padding: 20px;
+}
+
+.eyebrow {
+    font-size: 13px;
+    letter-spacing: .04em;
+    color: #a1a1a6;
+    margin-bottom: 18px;
+}
+
+.hero h1 {
+    font-size: clamp(64px, 11vw, 150px);
+    line-height: .92;
+    letter-spacing: -7px;
+    font-weight: 600;
+}
+
+.hero p {
+    margin-top: 25px;
+    color: #a1a1a6;
+    font-size: 17px;
+}
+
+.hero-sub {
+    margin-top: 10px;
+    color: #6e6e73;
+    font-size: 13px;
+}
+
+.scroll-hint {
+    position: absolute;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #777;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+/* INTRO */
+
+.intro {
+    background: #fff;
+    color: #000;
+    min-height: 70vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    padding: 120px 30px;
+}
+
+.intro-content {
+    max-width: 850px;
+}
+
+.intro h2 {
+    font-size: clamp(45px, 7vw, 90px);
+    line-height: 1;
+    letter-spacing: -4px;
+    font-weight: 600;
+}
+
+.intro p {
+    margin-top: 28px;
+    color: #6e6e73;
+    font-size: 18px;
+}
+
+/* CAT */
+
+.cat-section {
+    background: #000;
+    padding: 150px 20px;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 65px;
+}
+
+.section-heading .eyebrow {
+    color: #86868b;
+}
+
+.section-heading h2 {
+    font-size: clamp(42px, 6vw, 75px);
+    letter-spacing: -3px;
+    line-height: 1;
+}
+
+.section-heading p {
+    margin-top: 20px;
+    color: #86868b;
+    font-size: 16px;
+}
+
+.cat-wrapper {
+    width: min(1200px, 100%);
+    margin: auto;
+}
+
+.cat-card {
+    position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+    background: #111;
+    box-shadow: 0 40px 100px rgba(0,0,0,.6);
+}
+
+.cat-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    background: #111;
+}
+
+.cat-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111;
+    z-index: 2;
+    opacity: 1;
+    transition: opacity .5s ease;
+}
+
+.cat-loading.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader {
+    width: 25px;
+    height: 25px;
+    border: 2px solid rgba(255,255,255,.2);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.cat-controls {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cat-info {
+    color: #777;
+    font-size: 12px;
+}
+
+.controls-right {
+    display: flex;
+    gap: 8px;
+}
+
+.control-btn {
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    color: #fff;
+
+    border-radius: 100px;
+    padding: 11px 17px;
+
+    cursor: pointer;
+    font-size: 12px;
+
+    transition: .3s ease;
+}
+
+.control-btn:hover {
+    background: rgba(255,255,255,.14);
+    transform: translateY(-1px);
+}
+
+/* DISCOVER */
+
+.discover {
+    min-height: 80vh;
+    padding: 160px 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background:
+        radial-gradient(circle at center, #1b1b1b 0%, #000 55%);
+}
+
+.discover h2 {
+    font-size: clamp(50px, 8vw, 105px);
+    letter-spacing: -5px;
+    line-height: .95;
+}
+
+.discover p {
+    color: #86868b;
+    margin-top: 25px;
+    font-size: 17px;
+}
+
+.primary-btn {
+    margin-top: 35px;
+
+    border: none;
+    background: #fff;
+    color: #000;
+
+    padding: 14px 24px;
+    border-radius: 100px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+    transition: .3s ease;
+}
+
+.primary-btn:hover {
+    transform: scale(1.04);
+    background: #f5f5f5;
+}
+
+/* GRID */
+
+.gallery {
+    background: #000;
+    padding: 30px 20px 150px;
+}
+
+.gallery-grid {
+    width: min(1200px, 100%);
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.gallery-item {
+    overflow: hidden;
+    border-radius: 24px;
+    background: #111;
+}
+
+.gallery-item img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+
+    transition: transform 1s cubic-bezier(.2,.8,.2,1);
+}
+
+.gallery-item:hover img {
+    transform: scale(1.035);
+}
+
+/* COLLECTION */
+
+.collection {
+    background: #f5f5f7;
+    color: #000;
+    min-height: 70vh;
+    padding: 150px 30px;
+}
+
+.collection-inner {
+    width: min(1100px, 100%);
+    margin: auto;
+}
+
+.collection h2 {
+    font-size: clamp(45px, 6vw, 75px);
+    letter-spacing: -4px;
+}
+
+.collection-sub {
+    margin-top: 20px;
+    color: #6e6e73;
+}
+
+.collection-grid {
+    margin-top: 60px;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.collection-card {
+    background: #fff;
+    border-radius: 22px;
+    overflow: hidden;
+}
+
+.collection-card img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.empty-collection {
+    margin-top: 60px;
+    padding: 70px 20px;
+
+    border-radius: 25px;
+    background: rgba(0,0,0,.04);
+
+    text-align: center;
+    color: #86868b;
+}
+
+/* FINAL */
+
+.final {
+    min-height: 100vh;
+    background: #000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    padding: 100px 30px;
+}
+
+.final-content {
+    max-width: 800px;
+}
+
+.final h2 {
+    font-size: clamp(55px, 8vw, 110px);
+    line-height: .95;
+    letter-spacing: -5px;
+}
+
+.final p {
+    color: #86868b;
+    margin-top: 25px;
+    font-size: 17px;
+}
+
+/* ELA REVEAL */
+
+.reveal {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0,0,0,.94);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .5s ease, visibility .5s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.reveal-content {
+    text-align: center;
+    transform: translateY(20px) scale(.97);
+    transition: transform .7s cubic-bezier(.2,.8,.2,1);
+}
+
+.reveal.active .reveal-content {
+    transform: translateY(0) scale(1);
+}
+
+.ela-avatar-wrap {
+    width: 210px;
+    height: 210px;
+
+    margin: auto;
+
+    border-radius: 50%;
+    overflow: hidden;
+
+    background: #111;
+
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,.12),
+        0 30px 100px rgba(0,0,0,.7);
+}
+
+.ela-avatar {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+.ela-loading {
+    position: absolute;
+    width: 210px;
+    height: 210px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ela-name {
+    margin-top: 30px;
+    font-size: 34px;
+    font-weight: 500;
+    letter-spacing: -1.5px;
+}
+
+.ela-subtitle {
+    margin-top: 10px;
+    color: #86868b;
+    font-size: 16px;
+}
+
+.reveal-line {
+    width: 35px;
+    height: 1px;
+    background: rgba(255,255,255,.25);
+
+    margin: 35px auto 0;
+}
+
+.close-reveal {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.15);
+
+    background: rgba(255,255,255,.07);
+    color: #fff;
+
+    cursor: pointer;
+    font-size: 18px;
+
+    transition: .3s ease;
+}
+
+.close-reveal:hover {
+    background: rgba(255,255,255,.15);
+}
+
+/* REVEAL ANIMATION */
+
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(35px);
+    transition: opacity 1s ease, transform 1s cubic-bezier(.2,.8,.2,1);
+}
+
+.reveal-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* FOOTER */
+
+footer {
+    background: #000;
+    color: #555;
+
+    padding: 50px 30px;
+    text-align: center;
+
+    font-size: 11px;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .nav-inner {
+        width: calc(100% - 30px);
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero {
+        min-height: 650px;
+    }
+
+    .hero h1 {
+        letter-spacing: -4px;
+    }
+
+    .intro h2,
+    .discover h2,
+    .final h2 {
+        letter-spacing: -3px;
+    }
+
+    .cat-section {
+        padding: 100px 15px;
+    }
+
+    .cat-card {
+        border-radius: 20px;
+    }
+
+    .cat-controls {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .controls-right {
+        width: 100%;
+    }
+
+    .control-btn {
+        flex: 1;
+    }
+
+    .gallery {
+        padding: 15px 15px 100px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .collection {
+        padding: 100px 20px;
+    }
+
+    .collection-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .ela-avatar-wrap,
+    .ela-loading {
+        width: 175px;
+        height: 175px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+    <div class="nav-inner">
+
+        <div class="logo">CAT</div>
+
+        <ul class="nav-links">
+            <li><a href="#kesfet">Keşfet</a></li>
+            <li><a href="#galeri">Galeri</a></li>
+            <li><a href="#koleksiyon">Koleksiyon</a></li>
+        </ul>
+
+        <div class="saved-count">
+            <span id="savedCount">0</span> kayıt
+        </div>
+
+    </div>
+</nav>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-content reveal-on-scroll">
+
+        <div class="eyebrow">
+            Rastgele. Sonsuz. Farklı.
+        </div>
+
+        <h1>Sadece<br>bir kedi.</h1>
+
+        <p>
+            Sen seçmedin. O sadece karşına çıktı.
+        </p>
+
+        <div class="hero-sub">
+            Her yenilemede başka bir kedi.
+        </div>
+
+    </div>
+
+    <div class="scroll-hint">
+        Aşağı kaydır
+    </div>
+
+</section>
+
+
+<!-- INTRO -->
+
+<section class="intro">
+
+    <div class="intro-content reveal-on-scroll">
+
+        <div class="eyebrow">
+            Fazlasına gerek yok.
+        </div>
+
+        <h2>
+            İsim yok.<br>
+            Hikâye yok.<br>
+            Sadece bir kedi.
+        </h2>
+
+        <p>
+            Bazen hiçbir şeyi açıklamaya gerek yoktur.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- RANDOM CAT -->
+
+<section class="cat-section" id="kesfet">
+
+    <div class="section-heading reveal-on-scroll">
+
+        <div class="eyebrow">
+            Şimdi keşfet
+        </div>
+
+        <h2>Karşına ne çıkacak?</h2>
+
+        <p>
+            Tamamen rastgele bir kedi.
+        </p>
+
+    </div>
+
+    <div class="cat-wrapper">
+
+        <div class="cat-card">
+
+            <div class="cat-loading" id="catLoading">
+                <div class="loader"></div>
+            </div>
+
+            <img
+                id="mainCat"
+                src=""
+                alt="Rastgele kedi"
+            >
+
+        </div>
+
+        <div class="cat-controls">
+
+            <div class="cat-info">
+                Kedi #<span id="catNumber">1</span>
+            </div>
+
+            <div class="controls-right">
+
+                <button class="control-btn" id="saveBtn">
+                    Kaydet
+                </button>
+
+                <button class="control-btn" id="fullscreenBtn">
+                    Tam ekran
+                </button>
+
+                <button class="control-btn" id="nextBtn">
+                    Yeni kedi
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- DISCOVER -->
+
+<section class="discover">
+
+    <div class="reveal-on-scroll">
+
+        <div class="eyebrow">
+            Sonsuz olasılık
+        </div>
+
+        <h2>
+            Sırada<br>
+            ne var?
+        </h2>
+
+        <p>
+            Bir sonraki kediyi görmek için devam et.
+        </p>
+
+        <button class="primary-btn" id="discoverBtn">
+            Başka bir kedi keşfet
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- GALLERY -->
+
+<section class="gallery" id="galeri">
+
+    <div class="gallery-grid">
+
+        <div class="gallery-item reveal-on-scroll">
+            <img src="https://cataas.com/cat?width=1600&height=1600" alt="Kedi">
+        </div>
+
+        <div class="gallery-item reveal-on-scroll">
+            <img src="https://cataas.com/cat?width=1600&height=1600" alt="Kedi">
+        </div>
+
+        <div class="gallery-item reveal-on-scroll">
+            <img src="https://cataas.com/cat?width=1600&height=1600" alt="Kedi">
+        </div>
+
+        <div class="gallery-item reveal-on-scroll">
+            <img src="https://cataas.com/cat?width=1600&height=1600" alt="Kedi">
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- COLLECTION -->
+
+<section class="collection" id="koleksiyon">
+
+    <div class="collection-inner">
+
+        <div class="reveal-on-scroll">
+
+            <div class="eyebrow">
+                Senin koleksiyonun
+            </div>
+
+            <h2>Kaydettiklerin.</h2>
+
+            <p class="collection-sub">
+                Beğendiğin kediler burada saklanır.
+            </p>
+
+        </div>
+
+        <div id="collectionContent">
+
+            <div class="empty-collection" id="emptyCollection">
+                Henüz bir kedi kaydetmedin.
+            </div>
+
+            <div class="collection-grid" id="collectionGrid"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FINAL -->
+
+<section class="final">
+
+    <div class="final-content reveal-on-scroll">
+
+        <div class="eyebrow">
+            Son bir şey
+        </div>
+
+        <h2>
+            Benim tercih<br>
+            ettiğim kedi.
+        </h2>
+
+        <p>
+            Bazı tercihler gerçekten kolaydır.
+        </p>
+
+        <button class="primary-btn" id="showElaBtn">
+            Kediyi Gör
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ELA REVEAL -->
+
+<div class="reveal" id="elaReveal">
+
+    <button class="close-reveal" id="closeReveal">
+        ×
+    </button>
+
+    <div class="reveal-content">
+
+        <div class="ela-avatar-wrap">
+
+            <div class="ela-loading" id="elaLoading">
+                <div class="loader"></div>
+            </div>
+
+            <img
+                class="ela-avatar"
+                id="elaAvatar"
+                src="./images/image.PNG"
+                alt="Ela"
+            >
+
+        </div>
+
+        <div class="ela-name">
+            Ela
+        </div>
+
+        <div class="ela-subtitle">
+            En iyi tercihtir.
+        </div>
+
+        <div class="reveal-line"></div>
+
+    </div>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+    © 2026 CAT — Sadece bir kedi.
+</footer>
+
+
+<script>
+
+/* =========================
+   RASTGELE KEDİ
+========================= */
+
+const mainCat = document.getElementById("mainCat");
+const catLoading = document.getElementById("catLoading");
+const nextBtn = document.getElementById("nextBtn");
+const discoverBtn = document.getElementById("discoverBtn");
+const saveBtn = document.getElementById("saveBtn");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+const catNumber = document.getElementById("catNumber");
+
+let currentCat = "";
+let number = 1;
+
+function loadCat() {
+
+    catLoading.classList.remove("hidden");
+
+    const random = Date.now();
+
+    const url =
+        "https://cataas.com/cat?width=2400&height=1600&random=" + random;
+
+    const tempImage = new Image();
+
+    tempImage.onload = function() {
+
+        mainCat.src = url;
+        currentCat = url;
+
+        catLoading.classList.add("hidden");
+
+    };
+
+    tempImage.onerror = function() {
+
+        catLoading.classList.add("hidden");
+
+    };
+
+    tempImage.src = url;
+
+}
+
+function nextCat() {
+
+    number++;
+
+    catNumber.textContent = number;
+
+    loadCat();
+
+}
+
+nextBtn.addEventListener("click", nextCat);
+
+discoverBtn.addEventListener("click", function() {
+
+    document
+        .getElementById("kesfet")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+    setTimeout(() => {
+        nextCat();
+    }, 700);
+
+});
+
+
+/* =========================
+   KAYDETME
+========================= */
+
+let savedCats =
+    JSON.parse(localStorage.getItem("savedCats")) || [];
+
+function updateSavedCount() {
+
+    document.getElementById("savedCount").textContent =
+        savedCats.length;
+
+}
+
+saveBtn.addEventListener("click", function() {
+
+    if (!currentCat) return;
+
+    if (!savedCats.includes(currentCat)) {
+
+        savedCats.push(currentCat);
+
+        localStorage.setItem(
+            "savedCats",
+            JSON.stringify(savedCats)
+        );
+
+        saveBtn.textContent = "Kaydedildi";
+
+        updateSavedCount();
+        renderCollection();
+
+        setTimeout(() => {
+            saveBtn.textContent = "Kaydet";
+        }, 1400);
+
+    } else {
+
+        saveBtn.textContent = "Zaten kayıtlı";
+
+        setTimeout(() => {
+            saveBtn.textContent = "Kaydet";
+        }, 1400);
+
+    }
+
+});
+
+
+/* =========================
+   KOLEKSİYON
+========================= */
+
+const collectionGrid =
+    document.getElementById("collectionGrid");
+
+const emptyCollection =
+    document.getElementById("emptyCollection");
+
+function renderCollection() {
+
+    collectionGrid.innerHTML = "";
+
+    if (savedCats.length === 0) {
+
+        emptyCollection.style.display = "block";
+
+        return;
+
+    }
+
+    emptyCollection.style.display = "none";
+
+    savedCats.forEach((cat) => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "collection-card";
+
+        const img =
+            document.createElement("img");
+
+        img.src = cat;
+        img.alt = "Kaydedilmiş kedi";
+
+        card.appendChild(img);
+
+        collectionGrid.appendChild(card);
+
+    });
+
+}
+
+updateSavedCount();
+renderCollection();
+
+
+/* =========================
+   TAM EKRAN
+========================= */
+
+fullscreenBtn.addEventListener("click", function() {
+
+    const image = document.getElementById("mainCat");
+
+    if (image.requestFullscreen) {
+
+        image.requestFullscreen();
+
+    }
+
+});
+
+
+/* =========================
+   ELA
+========================= */
+
+const showElaBtn =
+    document.getElementById("showElaBtn");
+
+const elaReveal =
+    document.getElementById("elaReveal");
+
+const closeReveal =
+    document.getElementById("closeReveal");
+
+const elaAvatar =
+    document.getElementById("elaAvatar");
+
+const elaLoading =
+    document.getElementById("elaLoading");
+
+
+function openEla() {
+
+    elaReveal.classList.add("active");
+
+    document.body.style.overflow = "hidden";
+
+}
+
+
+function closeEla() {
+
+    elaReveal.classList.remove("active");
+
+    document.body.style.overflow = "";
+
+}
+
+
+showElaBtn.addEventListener("click", openEla);
+
+closeReveal.addEventListener("click", closeEla);
+
+elaReveal.addEventListener("click", function(e) {
+
+    if (e.target === elaReveal) {
+        closeEla();
+    }
+
+});
+
+
+document.addEventListener("keydown", function(e) {
+
+    if (e.key === "Escape") {
+        closeEla();
+    }
+
+});
+
+
+/* FOTO YÜKLENİNCE LOADER KAPAT */
+
+elaAvatar.addEventListener("load", function() {
+
+    elaLoading.style.display = "none";
+
+});
+
+
+/* FOTO BULUNAMAZSA */
+
+elaAvatar.addEventListener("error", function() {
+
+    elaLoading.innerHTML = `
+        <span style="
+            color:#777;
+            font-size:11px;
+            text-align:center;
+            padding:20px;
+        ">
+        image.PNG bulunamadı
+        </span>
+    `;
+
+});
+
+
+/* =========================
+   SCROLL ANİMASYONLARI
+========================= */
+
+const observer =
+    new IntersectionObserver(
+        (entries) => {
+
+            entries.forEach(entry => {
+
+                if (entry.isIntersecting) {
+
+                    entry.target.classList.add("visible");
+
+                }
+
+            });
+
+        },
+        {
+            threshold: .12
+        }
+    );
+
+
+document
+    .querySelectorAll(".reveal-on-scroll")
+    .forEach(el => observer.observe(el));
+
+
+/* =========================
+   BAŞLANGIÇ
+========================= */
+
+loadCat();
+
+</script>
+
+</body>
+</html>
